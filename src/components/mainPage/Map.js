@@ -1,6 +1,9 @@
+"use client"
+
 import React from 'react'
 import axios from 'axios'
-import { useEffect, useState } from 'react';
+import { useState, useEffect } from 'react';
+
 
 function Map() {
 
@@ -24,7 +27,7 @@ function Map() {
       </div> 
       <div className='inline-block float-right underline cursor-pointer mt-5'>View all 500+ cities</div>
       <div>
-      <iframe className='w-full mt-10 h-full mb-10' src="https://maps.google.com/maps?width=100%&height=600&hl=en&q=%C4%B0zmir+(My%20Business%20Name)&ie=UTF8&t=&z=14&iwloc=B&output=embed"></iframe>
+      <iframe className='w-full mt-10 h-full mb-10' src="https://maps.google.com/maps?width=100%&height=600&hl=en&q=%C4%B0zmir+(My%20Business%20Name)&ie=UTF8&t=&z=14&iwloc=B&output=embed" title='Google map'></iframe>
       </div>
       {cities.map((value) => (
         <div  className='inline-block mt-10 w-1/4'>
@@ -37,4 +40,4 @@ function Map() {
   )
 }
 
-export default Map
+export default Map;
