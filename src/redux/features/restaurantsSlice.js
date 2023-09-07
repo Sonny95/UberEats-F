@@ -72,15 +72,8 @@ export const restaurantsSlice = createSlice({
   },
 });
 
-// export const selectFoods = createSelector(
-//   (state) => state.restaurants.restaurantsData,
-//   (restaurantsData) => restaurantsData.foods
-// );
 export const { reset, setSort } = restaurantsSlice.actions;
 
 export const selectFoods = (state) => state.restaurants.restaurantsData;
-// export const sort = (state) => state.restaurants.sort;
-// export const error = (state) => state.restaurants.error;
-// export const loading = (state) => state.restaurants.loading;
 
 export default restaurantsSlice.reducer;

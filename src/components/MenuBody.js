@@ -12,12 +12,12 @@ import Link from "next/link";
 
 import { useSelector, useDispatch } from "react-redux";
 import { searchBySort, showAllRestaurants } from "../features/restaurants/restaurantsAction";
-import { reset } from "../features/restaurants/restaurantsSlice";
 
 function MenuBody() {
-  const { restaurantsData, loading, success, error, sort } = useSelector((state) => state.restaurants);
+  const { restaurantsData, loading, success, error, sort } = useSelector(
+    (state) => state.restaurants
+  );
   const dispatch = useDispatch();
-  console.log(restaurantsData, "다타");
 
   const [menu, setMenu] = useState([]);
 
@@ -31,70 +31,16 @@ function MenuBody() {
     }
   }, [dispatch, error, success, sort]);
 
-  // useEffect(() => {
-  //   dispatch(showAllRestaurants())
-  //     .then(() => {
-  //       if (success) {
-  //         setRestaurantData(restaurantsData);
-  //       }
-  //     })
-  //     .catch((error) => {
-  //       console.log(error);
-  //     });
-  // }, [dispatch, success]);
-
   useEffect(() => {
     axios
       .get("http://localhost:8000/menu")
       .then((response) => {
         setMenu(response.data);
-        console.log(response.data);
       })
       .catch((error) => {
         console.error(error);
       });
   }, []);
-
-  // const getProduct = () => {
-  //   axios
-  //     .get("http://localhost:8000/foods", {
-  //       params: { filters }, // Include filters in the request parameters
-  //     })
-  //     .then((response) => {
-  //       setFoods(response.data);
-  //       console.log(response.data);
-  //     })
-  //     .catch((error) => {
-  //       console.error(error);
-  //     });
-  // };
-
-  // useEffect(() => {
-  //   getProduct();
-  // }, []);
-
-  // const showFilterResults = (filters) => {
-  //   const variables = {
-  //     skip: 0,
-  //     limit: limit,
-  //     filters: filters,
-  //   };
-  //   getProduct(variables);
-  //   setSkip(0);
-  // };
-
-  // const handleFilters = (newFilters, category) => {
-  //   console.log(newFilters);
-
-  //   const updatedFilters = { ...filters };
-  //   updatedFilters[category] = newFilters;
-
-  //   if (category === "sort") {
-  //     // Handle sorting logic here
-  //   }
-  //   showFilterResults(updatedFilters);
-  //   setFilters(updatedFilters);
-  // };
 
   return (
     <div className=" w-full">
@@ -114,7 +60,13 @@ function MenuBody() {
 
         {/* Right */}
         <div className="flex flex-wrap w-full m-10 ">
-          <div className="flex flex-wrap">{loading ? <h1>loading…</h1> : restaurantsData.length > 0 && <Restaurants foods={restaurantsData} />}</div>
+          <div className="flex flex-wrap">
+            {loading ? (
+              <h1>loading…</h1>
+            ) : (
+              restaurantsData.length > 0 && <Restaurants foods={restaurantsData} />
+            )}
+          </div>
           <MenuCategories menu={menu} />
         </div>
       </div>

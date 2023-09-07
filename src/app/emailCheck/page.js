@@ -22,7 +22,10 @@ function EmailCheck() {
       .string()
       .required("Type your Email.")
       .email("It is not an email")
-      .matches(/^[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*.[a-zA-Z]{2,3}$/i, "Type your Email."),
+      .matches(
+        /^[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*.[a-zA-Z]{2,3}$/i,
+        "Type your Email."
+      ),
   });
 
   const {
@@ -44,11 +47,9 @@ function EmailCheck() {
   }, []);
 
   const onSubmit = (data) => {
-    console.log(data);
     axios
       .get("http://localhost:8000/emailCheck", { params: { email: data.email } })
       .then((response) => {
-        console.log(response.data, "코드");
         if (response.data.code === 409) {
           alert("Your Email is registered");
           setEmail(data.email);
@@ -77,9 +78,17 @@ function EmailCheck() {
       <div className="w-1/4 h-full absolute top-1/4 left-2/4 transform -translate-x-2/4">
         <div className="text-3xl">What's your email?</div>
         <form onSubmit={handleSubmit(onSubmit)}>
-          <input name="email" {...register("email")} placeholder="Mobie number or email address" className="w-full h-12 mt-5 bg-gray-200"></input>
+          <input
+            name="email"
+            {...register("email")}
+            placeholder="Mobie number or email address"
+            className="w-full h-12 mt-5 bg-gray-200"
+          ></input>
           {errors.email && <p>{errors.email.message}</p>}
-          <button className="cursor-pointer w-full h-12 bg-black rounded-lg text-white mt-5" type="submit">
+          <button
+            className="cursor-pointer w-full h-12 bg-black rounded-lg text-white mt-5"
+            type="submit"
+          >
             Continue
           </button>
         </form>
@@ -91,14 +100,17 @@ function EmailCheck() {
           Continue with Github
         </button>
         <button className="cursor-pointer w-full h-12 bg-gray-200 rounded-lg mt-5">
-          <Image src={apple} alt="apple" className="w-8 h-8 inline-block mr-4"></Image>Continue with Apple
+          <Image src={apple} alt="apple" className="w-8 h-8 inline-block mr-4"></Image>Continue with
+          Apple
         </button>
         <button className="cursor-pointer w-full h-12 bg-gray-200 rounded-lg mt-5 mb-5">
-          <Image src={facebook} alt="facebook" className="w-8 h-8 inline-block mr-4"></Image>Continue with Facebook
+          <Image src={facebook} alt="facebook" className="w-8 h-8 inline-block mr-4"></Image>
+          Continue with Facebook
         </button>
         <span className="text-xs">
-          By proceeding, you agree to receive calls and WhatsApp or SMS messages from us and our affiliates at the number you have provided, including through
-          auto-dial features.This site is protected by reCAPTCHA and the Google Privacy Policy and Terms of Service apply.
+          By proceeding, you agree to receive calls and WhatsApp or SMS messages from us and our
+          affiliates at the number you have provided, including through auto-dial features.This site
+          is protected by reCAPTCHA and the Google Privacy Policy and Terms of Service apply.
         </span>
       </div>
     </div>

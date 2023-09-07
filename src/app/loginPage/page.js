@@ -9,15 +9,18 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import { useRouter, useSearchParams } from "next/navigation"; // next/router 안됨 몰라 왜  app안인데?
 import Cookies from "universal-cookie";
+import { useDispatch } from "react-redux";
+import { loginAction } from "../../redux/features/userSlice";
 
 function LoginPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
+  const dispatch = useDispatch();
 
+  //set a range of password input type
   const formSchema = yup.object({
     password: yup.string().required("Type your password.").min(1, "Minimum8"),
   });
-
   const {
     register,
     handleSubmit,
@@ -27,12 +30,12 @@ function LoginPage() {
     resolver: yupResolver(formSchema),
   });
 
+  //receive an email from emailCheck component
   const email = searchParams.get("email");
-  console.log(email, "email");
 
+  //send a requestData then get a response code num
   const onSubmit = (data) => {
     const cookies = new Cookies();
-    console.log(data, "login");
 
     const requestData = {
       email: email,
@@ -42,18 +45,10 @@ function LoginPage() {
     axios
       .post("http://localhost:8000/login", requestData)
       .then((response) => {
-        console.log(response.data.code, "response.data.code");
-        console.log(response.status, "response.status");
-        if (response.data.code === 200) {
-          alert("User Login successfully");
-          cookies.set("token", response.data.token, {
-            path: "/restaurant",
-            domain: ".localhost",
-            httpOnly: true,
-          });
-          console.log(response.data.token, "cookie로껒여");
-          console.log(response.data, "????");
-        }
+        alert("User Login successfully");
+        cookies.set("token", response.data.token);
+        router.push("/restaurant");
+        dispatch(loginAction(true));
       })
       .catch((error) => {
         console.log(error.response);
@@ -71,9 +66,17 @@ function LoginPage() {
       <div className="w-1/4 h-full absolute top-1/4 left-2/4 transform -translate-x-2/4">
         <div className="text-3xl">Checking Password</div>
         <form onSubmit={handleSubmit(onSubmit)}>
-          <input name="password" {...register("password")} placeholder="Type your password" className="w-full h-12 mt-5 bg-gray-200"></input>
+          <input
+            name="password"
+            {...register("password")}
+            placeholder="Type your password"
+            className="w-full h-12 mt-5 bg-gray-200"
+          ></input>
           {errors.password && <p>{errors.password.message}</p>}
-          <button className="cursor-pointer w-full h-12 bg-black rounded-lg text-white mt-5" type="submit">
+          <button
+            className="cursor-pointer w-full h-12 bg-black rounded-lg text-white mt-5"
+            type="submit"
+          >
             Register
           </button>
         </form>

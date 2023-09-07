@@ -9,7 +9,6 @@ import axios from "axios";
 import Footer from "@/components/mainPage/Footer";
 import Restaurants from "@/components/restaurantPage/RightComponents/Restaurants";
 import MenuCategories from "@/components/restaurantPage/RightComponents/MenuCategories";
-import Link from "next/link";
 import SortCheckBox from "@/components/restaurantPage/SortCheckBox";
 import FromCheckBox from "@/components/restaurantPage/FromCheckBox";
 import PriceCheckBox from "@/components/restaurantPage/PriceCheckBox";
@@ -39,7 +38,6 @@ function Restaurant() {
       .get("http://localhost:8000/menu")
       .then((response) => {
         setMenu(response.data);
-        console.log(response.data);
       })
       .catch((error) => {
         console.error(error);
@@ -81,7 +79,9 @@ function Restaurant() {
               {restaurantsData.loading ? (
                 <h1>loading…</h1>
               ) : (
-                restaurantsData.restaurantsData?.length > 0 && <Restaurants foods={restaurantsData.restaurantsData} />
+                restaurantsData.restaurantsData?.length > 0 && (
+                  <Restaurants foods={restaurantsData.restaurantsData} />
+                )
               )}
             </div>
             <MenuCategories menu={menu} />

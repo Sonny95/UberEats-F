@@ -13,7 +13,6 @@ function FromCheckBox() {
   const dispatch = useDispatch();
   // save an option
   const [filter, setFilter] = useState("");
-  console.log(filter, "filter");
 
   //update an option to filter after clicked the button
   const handleToggle = (value) => {

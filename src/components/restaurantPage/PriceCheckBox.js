@@ -8,7 +8,6 @@ function PriceCheckBox() {
   const [hoveredButton, setHoveredButton] = useState(null);
 
   const [filter, setFilter] = useState("");
-  console.log(filter, "filter");
 
   //맵으로 0.1.2.3으로 돌려서 하기때문에 버튼 클릭 요청도 0.1.2.3로 함
   const handleButtonClick = (value) => {
@@ -42,9 +41,9 @@ function PriceCheckBox() {
           {[0, 1, 2, 3].map((value, index) => (
             <button
               key={index}
-              className={`bg-gray-300 h-12 w-full rounded-2xl p-3 flex-grow ${selectedButton === value ? "bg-gray-500 text-white" : ""} ${
-                hoveredButton === value ? "bg-gray-500 text-white" : ""
-              }sm:text-xs lg:text-sm`}
+              className={`bg-gray-300 h-12 w-full rounded-2xl p-3 flex-grow ${
+                selectedButton === value ? "bg-gray-500 text-white" : ""
+              } ${hoveredButton === value ? "bg-gray-500 text-white" : ""}sm:text-xs lg:text-sm`}
               onClick={() => handleButtonClick(value)}
               onMouseEnter={() => handleButtonHover(value)}
               onMouseLeave={() => handleButtonHover(null)}
