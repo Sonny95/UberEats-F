@@ -9,8 +9,11 @@ import amexCard from "../../../public/images/amexCard.png";
 import emptyCard from "../../../public/images/emptyCard.png";
 import Image from "next/image";
 import { useSelector, useDispatch } from "react-redux";
-import { getTotals } from "../../redux/features/cartSlice";
+import { updateTotals } from "../../redux/features/cartSlice";
 import axios from "axios";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { useRouter, useSearchParams } from "next/navigation";
 
 function paymentPage() {
   const [selectedView, setSelectedView] = useState("Card");
@@ -22,15 +25,20 @@ function paymentPage() {
   const cardNumberRef = useRef(null);
   const cardExpiryRef = useRef(null);
   const cvvRef = useRef(null);
+  const searchParams = useSearchParams();
+  const email = searchParams.get("email");
+  const router = useRouter();
 
   const dispatch = useDispatch();
-  const cart = useSelector((state) => state.cart.cartItem);
+  const cart = useSelector((state) => {
+    console.log(state, "state");
+    return state.cart.cartItem;
+  });
+  console.log(cart, "resId");
   const cartTotalAmount = useSelector((state) => state.cart.cartTotalAmount);
 
-  // var valid = require("card-validator");
-
   useEffect(() => {
-    dispatch(getTotals());
+    dispatch(updateTotals());
   }, [cart]);
 
   const handleCardClick = () => {
@@ -44,16 +52,6 @@ function paymentPage() {
   const handleGiftCardClick = () => {
     setSelectedView("Uber giftcard");
   };
-
-  // var numberValidation = valid.number("");
-
-  // if (!numberValidation.isPotentiallyValid) {
-  //   renderInvalidCardNumber();
-  // }
-
-  // if (numberValidation.card) {
-  //   console.log(numberValidation.card.type);
-  // }
 
   function getImageUrlForCardType(cardType) {
     switch (cardType) {
@@ -136,6 +134,44 @@ function paymentPage() {
       });
   }, []);
 
+  const getRestaurantImage = () => {
+    const matchingRes = resPic.find((item) => {
+      console.log(cart[0].resId, "res"); // Access resId of the first item in cart array
+      return item.id === cart[0].resId;
+    });
+    if (matchingRes && matchingRes.restaurantPic.length > 0) {
+      return matchingRes.restaurantPic;
+    }
+    return null;
+  };
+
+  const mealNames = cart.map((item) => item.mealName);
+
+  const onSubmit = () => {
+    const requestData = {
+      cardNumber,
+      cardExpiry,
+      CVV: cvvRef.current.value,
+      resId: cart[0].resId,
+      mealName: mealNames,
+      email: email,
+    };
+
+    axios
+      .post("http://localhost:8000/orderRecord", requestData)
+      .then((response) => {
+        if (response.status === 200) {
+          toast.success("Success Notification !", {
+            position: toast.POSITION.TOP_RIGHT,
+          });
+        }
+        router.push("/afterPay");
+      })
+      .catch((error) => {
+        console.log(error.response);
+      });
+  };
+
   return (
     <div className="p-10">
       <Logo></Logo>
@@ -143,7 +179,7 @@ function paymentPage() {
       <div className="w-full ">
         <div className="w-1/2 mt-10 mx-auto">
           {resPic.length > 0 && (
-            <img src={resPic[0].restaurantPic} className="w-full h-60 mt-10"></img>
+            <img src={getRestaurantImage()} className="w-full h-60 mt-10" alt="Restaurant" />
           )}
           <p className="text-3xl text-center my-10 ">Choose a payment method</p>
           <button
@@ -169,12 +205,14 @@ function paymentPage() {
             <div className="w-full mx-auto mt-10  ">
               <p className="mx-5">Name on card</p>
               <input
+                name="name"
                 placeholder="John Hill"
                 className="w-1/2 border border-gray-500 rounded-md h-10 m-5"
               />
               <p className="mx-5">Card number</p>
               <div className="w-1/2 border border-gray-500 rounded-md h-10 m-5 relative">
                 <input
+                  name="cardNumber"
                   ref={cardNumberRef}
                   placeholder="1234 5678 9876 5432"
                   value={cardNumber}
@@ -189,6 +227,7 @@ function paymentPage() {
               </div>
               <p className="mx-5">Card expiry</p>
               <input
+                name="cardExpiry"
                 ref={cardExpiryRef}
                 placeholder="08/09"
                 value={cardExpiry}
@@ -197,6 +236,7 @@ function paymentPage() {
               />
               <p className="mx-5">CVV</p>
               <input
+                name="CVV"
                 ref={cvvRef}
                 placeholder="123"
                 className="m-5 w-1/2 border border-gray-500 rounded-md h-10"
@@ -241,7 +281,10 @@ function paymentPage() {
             </div>
           )}
           <div className="w-full text-center">
-            <button className="m-5 w-1/2 border bg-[#46a357] text-white rounded-md h-10">
+            <button
+              onClick={onSubmit}
+              className="m-5 w-1/2 border bg-[#46a357] text-white rounded-md h-10"
+            >
               Pay ${(cartTotalAmount * 1.1).toFixed(2)}
             </button>
           </div>

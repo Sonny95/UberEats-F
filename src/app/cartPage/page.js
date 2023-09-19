@@ -11,22 +11,19 @@ import {
   removeItem,
   addToCart,
   initCart,
-  getTotals,
+  updateTotals,
 } from "../../redux/features/cartSlice";
 
 function CartPage() {
   const dispatch = useDispatch();
   const [res, setRes] = useState([]);
 
-  const cart = useSelector((state) => {
-    console.log(state);
-    return state.cart.cartItem;
-  });
+  const cart = useSelector((state) => state.cart.cartItem);
 
   const cartTotalAmount = useSelector((state) => state.cart.cartTotalAmount);
 
   useEffect(() => {
-    dispatch(getTotals());
+    dispatch(updateTotals());
   }, [cart]);
 
   useEffect(() => {
@@ -112,7 +109,6 @@ function CartPage() {
               Subtotal : $
               {cart.reduce((subtotal, item) => subtotal + item.mealPrice * item.cartQuantity, 0)}
             </div>
-            {/* 딜리버리피 데이타를 받아와야되는데 어떻게하딩 로칼스토리지 데이타? 악시오스로 불러오나? */}
             <div className="font-large mb-4">
               Delivery Fee ${" "}
               {res.find((restaurant) => restaurant.id === cart[0]?.resId)?.deliveryFee}
@@ -124,14 +120,7 @@ function CartPage() {
                 0.1
               ).toFixed(2)}
             </div>
-            {/* 토탈 금액위해서 리듀스 사용  */}
-            <div className="font-large mb-4">
-              Total: ${(cartTotalAmount * 1.1).toFixed(2)}
-              {/* Total: ${" "}
-              {(
-                cart.reduce((total, item) => total + item.mealPrice * item.cartQuantity, 0) * 1.1
-              ).toFixed(2)} */}
-            </div>
+            <div className="font-large mb-4">Total: ${(cartTotalAmount * 1.1).toFixed(2)}</div>
             <Link href="/paymentPage">
               <button className="w-full h-12 bg-gray-300 rounded-lg font-large ">
                 Go to checkout

@@ -16,9 +16,16 @@ const Post = ({ params }) => {
   const dispatch = useDispatch();
   const router = useRouter();
 
+  const cart = useSelector((state) => {
+    console.log(state, "state");
+    return state.cart.cartItem;
+  });
+
   const { id } = params;
   const [foods, setFoods] = useState([]);
   const [resPic, setResPic] = useState([]);
+  console.log(setResPic, "foodresId");
+  console.log(foods[0]?.resId, "foodresId!");
 
   //from food table.
   useEffect(() => {
@@ -34,20 +41,21 @@ const Post = ({ params }) => {
     }
   }, [id]);
 
-  const difresIdInit = (itemResId) => {
-    if (itemResId.resId !== setFoods.resId) {
-      const response = confirm("Do you want to order from new restaurant?");
+  const orderFromNewRes = (values) => {
+    if (cart.resId !== values.resId) {
+      // values.resId로 현재 메뉴의 resId를 가져옵니다.
+      const response = confirm("Create a new order?");
       if (response) {
         alert("yes");
-      } else {
         dispatch(initCart());
+      } else {
         alert("No");
       }
     }
   };
 
   const handleAddToCart = (values) => {
-    difresIdInit(values);
+    orderFromNewRes(values);
     dispatch(addToCart(values));
     // 두 함수를 순차적으로 호출
   };
@@ -76,7 +84,7 @@ const Post = ({ params }) => {
               {/* TODO allert for cart */}
               <button
                 onClick={() => {
-                  difresIdInit(values.resId);
+                  // orderFromNewRes(values.resId);
                   handleAddToCart(values);
                 }}
                 className="text-white border-2 border-white font-extrabold z-10 rounded-full bg-black w-10 h-10 absolute top-5 right-10 hover:bg-gray-700"
